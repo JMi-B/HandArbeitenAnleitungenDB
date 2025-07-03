@@ -8,4 +8,5 @@ Erster Versuch meine Anleitung in eine DB zu bringen und dabe MySQL zu lernen.
 - `schema/` — Database structure (tables, relationships)
 - `data/` — Sample data for testing
 - `scripts/` — Helper scripts (to set up or reset the database)
-- `docs/` — Documentation and diagrams
+- `docu/` — Documentation and diagrams
+- `dump/`- Dump, Exporte
