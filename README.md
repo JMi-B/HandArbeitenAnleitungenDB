@@ -9,4 +9,7 @@ Erster Versuch meine Anleitung in eine DB zu bringen und dabe MySQL zu lernen.
 - `data/` — Sample data for testing
 - `scripts/` — Helper scripts (to set up or reset the database)
 - `docu/` — Documentation and diagrams
-- `dump/`- Dump, Exporte
+- `dumps/`- Dump, Exporte
+
+### Namenskonvention
+CamelCase
