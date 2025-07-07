@@ -63,3 +63,64 @@ CREATE TABLE Technik (
 
 ALTER TABLE Objekt CHANGE Katergorie Kategorie VARCHAR(45);
 ALTER TABLE Objekt CHANGE Zwek Zweck VARCHAR(45);
+
+/*
+Tabelle für Projektideen
+*/
+
+CREATE TABLE Projekt (
+    ProjektID INT AUTO_INCREMENT PRIMARY KEY,
+    Name VARCHAR(100) NOT NULL,
+    Beschreibung TEXT
+);
+
+/*
+Bezeihungen
+*/
+
+/*
+Anleitung zu Medien 1:n
+*/
+
+alter table Anleitung add MediumID int not null;
+alter table Anleitung add foreign key (MediumID) references Medium(MediumID);
+
+/*
+Anleitung zu Autor n:m
+*/
+
+CREATE TABLE AnleitungAutor (
+    AnleitungID INT NOT NULL,
+    AutorID INT NOT NULL,
+    PRIMARY KEY (AnleitungID , AutorID),
+    FOREIGN KEY (AnleitungID)
+        REFERENCES Anleitung (AnleitungID),
+    FOREIGN KEY (AutorID)
+        REFERENCES Autor (AutorID)
+);
+
+
+/*
+Anleitung zu Objekt 1:n
+*/
+
+alter table Anleitung add ObjektID int not null;
+alter table Anleitung add foreign key (ObjektID) references Objekt(ObjektID);	
+
+/*
+Anleitung zu Technik 1:n
+*/
+
+alter table Anleitung add TechnikID int not null;
+alter table Anleitung add foreign key (TechnikID) references Technik(TechnikID);	
+
+/*
+Anleitung zu Projekt n:m
+*/
+
+/*
+Medium zu Autor n:m
+*/
+
+
+
