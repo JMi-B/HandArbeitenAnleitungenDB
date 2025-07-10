@@ -256,3 +256,26 @@ WHERE ROUTINE_SCHEMA = 'Anleitung03DB'
   
   -- alles Sauber
   */
+  
+  CREATE TABLE GegenstandTechnik (
+    GegenstandID INT NOT NULL,
+    TechnikID INT NOT NULL,
+    PRIMARY KEY (GegenstandID , TechnikID),
+    FOREIGN KEY (GegenstandID)
+        REFERENCES Gegenstand(GegenstandID),
+    FOREIGN KEY (TechnikID)
+        REFERENCES Technik(TechnikID)
+);
+  
+ CREATE TABLE Buch (
+  MediumID INT PRIMARY KEY,
+  Untertitel VARCHAR(100),
+  Jahr YEAR,
+  Verlag VARCHAR(45),
+  Ort VARCHAR(45),
+  ISBN VARCHAR(20),
+  Reihe VARCHAR(45),
+  Band INT,
+  FOREIGN KEY (MediumID) REFERENCES Medium(MediumID)
+);
+  
