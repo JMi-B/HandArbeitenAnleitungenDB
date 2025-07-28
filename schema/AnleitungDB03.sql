@@ -189,7 +189,7 @@ Umbenenung Objekt zu Gegenstand
 
 rename table Objekt to Gegenstand;
 
-alter table Gegenstand change ObjektID GegenstandID int;
+alter table Gegenstand change ObjektID GegenstandID int, algorithm=copy;
 alter table Anleitung change ObjektID GegenstandID int;
 
 rename table MediumObjekt to MediumGegenstand;
