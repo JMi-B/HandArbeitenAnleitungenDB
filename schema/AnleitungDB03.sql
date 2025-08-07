@@ -1,4 +1,7 @@
--- create database AnleitungDB03 character set	utf8mb4 collate utf8mb4_bin; -- Zeichensatz festlegen, collate Binärvergleich, Groß-/Kleinschreibung und Akzente werden unterschieden
+/*
+drop database if exists AnleitungDB03;
+create database AnleitungDB03 character set	utf8mb4 collate utf8mb4_bin; -- Zeichensatz festlegen, collate Binärvergleich, Groß-/Kleinschreibung und Akzente werden unterschieden
+*/
 use AnleitungDB03;
 
 /*
@@ -40,10 +43,14 @@ CREATE TABLE Autor (
 
 /*
 Tabelle Objekt
-*/
 
-CREATE TABLE Objekt (
-    ObjektID INT AUTO_INCREMENT PRIMARY KEY,
+drop table if exists objekt;
+*/
+/*
+ statdessen Tabele Gegenstand
+*/
+CREATE TABLE Gegenstand (
+    GegenstandID INT AUTO_INCREMENT PRIMARY KEY,
     Kategorie VARCHAR(45),
     Zweck VARCHAR(45),
     Stil VARCHAR(45),
@@ -62,13 +69,6 @@ CREATE TABLE Technik (
 );
 
 
-/* 
-ALTER TABLE Objekt RENAME COLUMN Katergorie TO Kategorie;  -- wird von der aktuellen MySQL Version nicht unterstützt
-	ALTER TABLE Objekt RENAME COLUMN Zwek TO Zweck; -- wird von der aktuellen MySQL Version nicht unterstützt
- */
-
--- ALTER TABLE Objekt CHANGE Katergorie Kategorie VARCHAR(45);
--- ALTER TABLE Objekt CHANGE Zwek Zweck VARCHAR(45);
 
 /*
 Tabelle für Projektideen
@@ -81,7 +81,7 @@ CREATE TABLE Projekt (
 );
 
 /*
-Bezeihungen
+Beziehungen
 */
 
 /*
@@ -110,8 +110,8 @@ CREATE TABLE AnleitungAutor (
 Anleitung zu Objekt 1:n
 */
 
-alter table Anleitung add ObjektID int not null;
-alter table Anleitung add foreign key (ObjektID) references Objekt(ObjektID);	
+alter table Anleitung add GegenstandID int not null;
+alter table Anleitung add foreign key (GegenstandID) references gegenstand(gegenstandID);	
 
 /*
 Anleitung zu Technik 1:n
@@ -156,7 +156,7 @@ Verbesserungen
 Anleitung ohne Objekt ist ein Tutorial
 */
 
-alter table Anleitung modify ObjektID int null;
+alter table Anleitung modify GegenstandID int null;
 
 /*
 Beziehgungen Medium Objekt, Technik
@@ -172,90 +172,17 @@ CREATE TABLE MediumTechnik (
         REFERENCES Technik (TechnikID)
 );
 
-CREATE TABLE MediumObjekt (
+CREATE TABLE MediumGegenstand (
     MediumID INT NOT NULL,
-    ObjektID INT NOT NULL,
-    PRIMARY KEY (MediumID , ObjektID),
+    GegenstandID INT NOT NULL,
+    PRIMARY KEY (MediumID , GegenstandID),
     FOREIGN KEY (MediumID)
         REFERENCES Medium (MediumID),
-    FOREIGN KEY (ObjektID)
-        REFERENCES Objekt (ObjektID)
+    FOREIGN KEY (GegenstandID)
+        REFERENCES gegenstand (GegenstandID)
 );
 
 
-/* 
-Umbenenung Objekt zu Gegenstand
-*/
-
-rename table Objekt to Gegenstand;
-
-alter table Gegenstand change ObjektID GegenstandID int, algorithm=copy;
-alter table Anleitung change ObjektID GegenstandID int;
-
-rename table MediumObjekt to MediumGegenstand;
-alter table MediumGegenstand change ObjektID GegenstandID int;
-
-
-select table_name, column_name
-from information_schema.columns
-where column_name like '%Objekt%';
-
--- liefert alte Objekt Tabelle zurück
-
-/*
-Fehler suche
-
-
-show tables;
-describe objekt;
-
-show full tables in anleitungdb03 where table_type like 'view';
-
--- information_schema greift auf alle DB zu nicht nur auf die in use
-
-*/
-/* Suche nach Resten von Objekt
-
--- Spalten
-select table_name, column_name
-from information_schema.columns
-where table_schema = 'Anleitung03DB'
-and column_name like '%Objekt%';
-
--- Tabellen
-select table_name
-from information_schema.tables
-where table_schema = 'Anleitung03DB'
-and table_name like '%Objekt%';
-
--- views
-select table_name
-from information_schema.views
-where table_schema = 'Anleitung03DB'
-and table_name like '%Objekt%';
-
--- indizes und constrainrs
-
-select table_name
-from information_schema.statistics
-where table_schema = 'Anleitung03DB'
-and index_name like '%Objekt%';
-
--- Fremdschlüssel
-
-select table_name, constraint_name
-from information_schema.key_column_usage
-where table_schema = 'Anleitung03DB'
-and constraint_name like '%Objekt%';
-
--- Trigger Routinen
-SELECT ROUTINE_NAME, ROUTINE_TYPE
-FROM INFORMATION_SCHEMA.ROUTINES
-WHERE ROUTINE_SCHEMA = 'Anleitung03DB'
-  AND ROUTINE_DEFINITION LIKE '%Objekt%';
-  
-  -- alles Sauber
-  */
   
   CREATE TABLE GegenstandTechnik (
     GegenstandID INT NOT NULL,
@@ -279,3 +206,6 @@ WHERE ROUTINE_SCHEMA = 'Anleitung03DB'
   FOREIGN KEY (MediumID) REFERENCES Medium(MediumID)
 );
   
+  /* Fehlerkorektur*/
+  
+ /* rename table mediumgegensand to MeduimGegenstand;*/
