@@ -13,7 +13,7 @@ CREATE TABLE Medium (
     MediumID INT AUTO_INCREMENT PRIMARY KEY,
     Titel VARCHAR(150) NOT NULL,
     MedienArt ENUM('Buch', 'Zeitschrift', 'Schnittmuster', 'Website', 'Flyer') NOT NULL
-);
+)
 
 
 /*
@@ -26,7 +26,7 @@ CREATE TABLE Anleitung (
     Titel VARCHAR(150) NOT NULL,
     Seitenzahl INT,
     Grundschnitt BOOLEAN DEFAULT FALSE
-);
+)
 
 
 /*
@@ -39,15 +39,12 @@ CREATE TABLE Autor (
     Vorname VARCHAR(45),
     Alias VARCHAR(45),
     Zusatz VARCHAR(10)
-);
+)
 
 /*
 Tabelle Objekt
 
 drop table if exists objekt;
-*/
-/*
- statdessen Tabele Gegenstand
 */
 CREATE TABLE Gegenstand (
     GegenstandID INT AUTO_INCREMENT PRIMARY KEY,
@@ -55,7 +52,7 @@ CREATE TABLE Gegenstand (
     Zweck VARCHAR(45),
     Stil VARCHAR(45),
     Modell VARCHAR(45)
-);
+)
 
 /*
 Tabelle Technik
@@ -66,7 +63,7 @@ CREATE TABLE Technik (
     Bereich VARCHAR(45),
     Methode VARCHAR(45),
     Arbeitsweise VARCHAR(45)
-);
+)
 
 
 
@@ -78,7 +75,7 @@ CREATE TABLE Projekt (
     ProjektID INT AUTO_INCREMENT PRIMARY KEY,
     Name VARCHAR(100) NOT NULL,
     Beschreibung TEXT
-);
+)
 
 /*
 Beziehungen
@@ -132,7 +129,7 @@ CREATE TABLE AnleitungProjekt (
         REFERENCES Anleitung (AnleitungID),
     FOREIGN KEY (ProjektID)
         REFERENCES Projekt (ProjektID)
-);
+)
 
 /*
 Medium zu Autor n:m
@@ -183,29 +180,57 @@ CREATE TABLE MediumGegenstand (
 );
 
 
-  
-  CREATE TABLE GegenstandTechnik (
+
+CREATE TABLE GegenstandTechnik (
     GegenstandID INT NOT NULL,
     TechnikID INT NOT NULL,
     PRIMARY KEY (GegenstandID , TechnikID),
     FOREIGN KEY (GegenstandID)
-        REFERENCES Gegenstand(GegenstandID),
+        REFERENCES Gegenstand (GegenstandID),
     FOREIGN KEY (TechnikID)
-        REFERENCES Technik(TechnikID)
+        REFERENCES Technik (TechnikID)
 );
-  
- CREATE TABLE Buch (
-  MediumID INT PRIMARY KEY,
-  Untertitel VARCHAR(100),
-  Jahr YEAR,
-  Verlag VARCHAR(45),
-  Ort VARCHAR(45),
-  ISBN VARCHAR(20),
-  Reihe VARCHAR(45),
-  Band INT,
-  FOREIGN KEY (MediumID) REFERENCES Medium(MediumID)
+ 
+CREATE TABLE Buch (
+    MediumID INT PRIMARY KEY,
+    Untertitel VARCHAR(100),
+    Jahr YEAR,
+    Verlag VARCHAR(45),
+    Ort VARCHAR(45),
+    ISBN VARCHAR(20),
+    Reihe VARCHAR(45),
+    Band INT,
+    FOREIGN KEY (MediumID)
+        REFERENCES Medium (MediumID)
 );
-  
+ 
   /* Fehlerkorektur*/
   
- /* rename table mediumgegensand to MeduimGegenstand;*/
+CREATE TABLE Website (
+    MediumID INT PRIMARY KEY,
+    URL VARCHAR(100),
+    Kanalname VARCHAR(45),
+    LanchDatum DATE,
+    Download BOOL,
+    Ausdruck BOOL,
+    FOREIGN KEY (MediumID)
+        REFERENCES medium (MediumID)
+);
+
+/*
+ Zeitsschriften
+ */
+ 
+CREATE TABLE Zeitschrift (
+    MediumID INT PRIMARY KEY,
+    Untertitel VARCHAR(45),
+    Jahrgang YEAR,
+    Monat INT,
+    Heftnummer VARCHAR(10),
+    Sonderheft BOOL,
+    FOREIGN KEY (MediumID)
+        REFERENCES medium (MediumID)
+);
+
+ 
+ 
