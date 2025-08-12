@@ -1,0 +1,35 @@
+-- 1. Medium anlegen
+INSERT INTO Medium (Titel, MedienArt) VALUES ('Handarbeitsbuch', 'Buch');
+SET @MediumID := LAST_INSERT_ID();
+
+-- 2. Buch-Datensatz anlegen
+INSERT INTO Buch (MediumID, Untertitel, Jahr, Verlag, Ort, ISBN, Reihe, Band)
+VALUES (@MediumID, 'Häkeln für Einsteiger', 2023, 'Wolle & Faden', 'Berlin', '1234567890123', 'Basics', 1);
+
+-- 3. Autor(en) anlegen
+INSERT INTO Autor (Nachname, Vorname, Alias, Zusatz) VALUES ('Müller', 'Anna', NULL, NULL);
+SET @AutorID := LAST_INSERT_ID();
+
+-- 4. Gegenstand anlegen
+INSERT INTO Gegenstand (Kategorie, Zweck, Stil, Modell)
+VALUES ('Küche', 'Gebrauch', 'Landhaus', 'Topflappen');
+SET @GegenstandID := LAST_INSERT_ID();
+
+-- 5. Technik anlegen
+INSERT INTO Technik (Bereich, Methode, Arbeitsweise) VALUES ('Häkeln', 'Filethäkeln', 'Runden');
+SET @TechnikID := LAST_INSERT_ID();
+
+-- 6. Projekt anlegen (optional)
+INSERT INTO Projekt (Name, Beschreibung) VALUES ('Küchenaccessoires', 'Set aus Topflappen und Untersetzern');
+SET @ProjektID := LAST_INSERT_ID();
+
+-- 7. Anleitung anlegen (mit allen IDs)
+INSERT INTO Anleitung (Titel, Seitenzahl, Grundschnitt, MediumID, GegenstandID, TechnikID)
+VALUES ('Topflappen mit Filetmuster', 15, FALSE, @MediumID, @GegenstandID, @TechnikID);
+SET @AnleitungID := LAST_INSERT_ID();
+
+-- 8. AnleitungAutor (n:m Beziehung)
+INSERT INTO AnleitungAutor (AnleitungID, AutorID) VALUES (@AnleitungID, @AutorID);
+
+-- 9. AnleitungProjekt (n:m Beziehung)
+INSERT INTO AnleitungProjekt (AnleitungID, ProjektID) VALUES (@AnleitungID, @ProjektID);
