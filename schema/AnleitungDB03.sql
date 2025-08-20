@@ -1,7 +1,7 @@
-/*
+
 drop database if exists AnleitungDB03;
 create database AnleitungDB03 character set	utf8mb4 collate utf8mb4_bin; -- Zeichensatz festlegen, collate Binärvergleich, Groß-/Kleinschreibung und Akzente werden unterschieden
-*/
+
 use AnleitungDB03;
 
 /*
@@ -13,7 +13,7 @@ CREATE TABLE Medium (
     MediumID INT AUTO_INCREMENT PRIMARY KEY,
     Titel VARCHAR(150) NOT NULL,
     MedienArt ENUM('Buch', 'Zeitschrift', 'Schnittmuster', 'Website', 'Flyer') NOT NULL
-);
+)
 
 
 /*
@@ -26,7 +26,7 @@ CREATE TABLE Anleitung (
     Titel VARCHAR(150) NOT NULL,
     Seitenzahl INT,
     Grundschnitt BOOLEAN DEFAULT FALSE
-);
+)
 
 
 /*
@@ -39,7 +39,7 @@ CREATE TABLE Autor (
     Vorname VARCHAR(45),
     Alias VARCHAR(45),
     Zusatz VARCHAR(10)
-);
+)
 
 /*
 Tabelle Objekt
@@ -52,7 +52,7 @@ CREATE TABLE Gegenstand (
     Zweck VARCHAR(45),
     Stil VARCHAR(45),
     Modell VARCHAR(45)
-);
+)
 
 /*
 Tabelle Technik
@@ -63,7 +63,7 @@ CREATE TABLE Technik (
     Bereich VARCHAR(45),
     Methode VARCHAR(45),
     Arbeitsweise VARCHAR(45)
-);
+)
 
 
 
@@ -75,7 +75,7 @@ CREATE TABLE Projekt (
     ProjektID INT AUTO_INCREMENT PRIMARY KEY,
     Name VARCHAR(100) NOT NULL,
     Beschreibung TEXT
-);
+)
 
 /*
 Beziehungen
@@ -129,7 +129,7 @@ CREATE TABLE AnleitungProjekt (
         REFERENCES Anleitung (AnleitungID),
     FOREIGN KEY (ProjektID)
         REFERENCES Projekt (ProjektID)
-);
+)
 
 /*
 Medium zu Autor n:m
@@ -189,8 +189,8 @@ CREATE TABLE GegenstandTechnik (
         REFERENCES Gegenstand (GegenstandID),
     FOREIGN KEY (TechnikID)
         REFERENCES Technik (TechnikID)
-);
- 
+)
+
 CREATE TABLE Buch (
     MediumID INT PRIMARY KEY,
     Untertitel VARCHAR(100),
@@ -202,9 +202,9 @@ CREATE TABLE Buch (
     Band INT,
     FOREIGN KEY (MediumID)
         REFERENCES Medium (MediumID)
-);
- 
-  /* Fehlerkorektur*/
+)
+
+/* Fehlerkorektur*/
   
 CREATE TABLE Website (
     MediumID INT PRIMARY KEY,
@@ -215,7 +215,7 @@ CREATE TABLE Website (
     Ausdruck BOOL,
     FOREIGN KEY (MediumID)
         REFERENCES medium (MediumID)
-);
+)
 
 /*
  Zeitsschriften
@@ -245,6 +245,9 @@ Zusätzliche Spallten einfügen
  
 ALTER TABLE Buch
 MODIFY COLUMN Band varchar(5);
+ 
+ alter table Projekt
+ rename column Name to Projektname;
  
  /*
  erster probe Datensatz
@@ -299,36 +302,30 @@ values(@AnleitungID, @AutorID);
 insert into anleitungprojekt (anleitungID, ProjektID)
 values (@AnleitungID, @ProjektID);
 
-/*hier begintt die Fehler suche*/
+insert into gegenstandtechnik (gegenstandID, technikID)
+values (@gegenstandID, @TechnikID);
 
- 
- SELECT * FROM Medium;
- select *from Buch;
- select * from Autor;
-SELECT * FROM Gegenstand;
-SELECT * FROM Technik;
-SELECT * FROM Projekt;
-SELECT * FROM Anleitung;
-SELECT * FROM AnleitungAutor;
-SELECT * FROM AnleitungProjekt;
-select * from GegenstandTechnik;
-select * from MediumGegenstand;
-select * from MediumAutor; 
-select * from MediumTechnik; 
+insert into mediumautor (mediumid, autorid)
+values (@mediumID, @AutorID);
 
-/* Korektur für Gegenstand*/
+insert into mediumtechnik (mediumid, technikid)
+values (@mediumid, @technikid);
 
-/* DS Löschen*/ 
 
-DELETE FROM Gegenstand WHERE GegenstandID = 0;
-/* Auto Inkrimetn koregiern*/
-ALTER TABLE Gegenstand AUTO_INCREMENT = 1;
-/*DS neu*/
-INSERT INTO Gegenstand (Kategorie, Zweck, Stil, Modell)
-VALUES ('Kleidung', 'OB', 'Paperbag', 'Hose');
+select * from anleitung;
+select * from AnleitungAutor;
+select * from Anleitungprojekt;
+select * from autor;
+select * from buch;
+select * from gegenstand;
+select * from gegenstandtechnik; 
+select * from medium;
+select * from mediumautor; 
+select * from mediumgegenstand; 
+select * from mediumtechnik; 
+select * from projekt;
+select * from technik;
+select * from website;
+select * from zeitschrift;
 
-/*Kontrolle*/
 
-SHOW CREATE TABLE Gegenstand;
-
-ALTER TABLE Gegenstand MODIFY GegenstandID INT(11) NOT NULL AUTO_INCREMENT;
