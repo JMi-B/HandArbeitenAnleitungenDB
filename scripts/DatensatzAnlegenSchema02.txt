@@ -1,0 +1,41 @@
+Insert into Medium (Titel, Sprache, MedienArt)
+Values ('Nähen leicht gemacht', 'deutsch', 'Buch');
+set @MediumID2 := last_insert_id();
+
+insert into Buch (MediumID, Untertitel, Jahr, Verlag, Ort, ISBN, Reihe, Band)
+values (@MediumID2, 'Einsteiger', 2022, 'Frechverlag', 'Stuttgart', '978-3-7724-1234-5', 'Nähreihe', '1');
+
+insert into Autor (Nachname, Vorname)
+values ('Müller', 'Sabine');
+set @AutorID2 := last_insert_id();
+
+insert	into Gegenstand (Kategorie, Zweck, Stil, Modell)
+values ('Accessoire', 'Freizeit', 'klassisch', 'Tasche');
+set @GegenstandID2 := last_insert_id();
+
+insert into Technik (Bereich, Methode, Arbeitsweise)
+values ('nähen', 'handnähen', 'einfach');
+set @TechnikID2 := last_insert_id();
+
+insert into Projekt (Projektname)
+values ('Strandtasche');
+set @ProjektID2 := last_insert_id();
+
+insert into Anleitung (Titel, Seitenzahl, Grundschnitt, Modellnummer, Schnittbogen, MediumID, GegenstandID, TechnikID)
+values ('Strandtasche mit Innentasche', 24, true, 'T1', 'A', @MediumID2, @GegenstandID2, @TechnikID2);
+set @AnleitungID2 := last_insert_id();
+
+insert into anleitungautor (AnleitungID, AutorID)
+values(@AnleitungID2, @AutorID2);
+
+insert into anleitungprojekt (anleitungID, ProjektID)
+values (@AnleitungID2, @ProjektID2);
+
+insert into gegenstandtechnik (gegenstandID, technikID)
+values (@gegenstandID2, @TechnikID2);
+
+insert into mediumautor (mediumid, autorid)
+values (@mediumID2, @AutorID2);
+
+insert into mediumtechnik (mediumid, technikid)
+values (@mediumid2, @technikid2);

@@ -376,35 +376,6 @@ values (@MediumID, @GegenstandID);
 insert into MediumGegenstand (MediumID, GegenstandID)
 values (@MediumID2, @GegenstandID2);
 
-/*
-Schnittmuster Tabelle 
-Vorschlag von IGOR
-*/
-CREATE TABLE Schnittmuster (
-    MediumID INT PRIMARY KEY,
-    Nummer VARCHAR(20),
-    Verlag VARCHAR(45),
-    Jahr YEAR,
-    FOREIGN KEY (MediumID)
-        REFERENCES Medium (MediumID)
-);
-
-/*
-Flyer Tabelle
-Vorschlag von IGOR
-*/
-CREATE TABLE Flyer (
-    MediumID INT PRIMARY KEY,
-    Herausgeber VARCHAR(45),
-    Erscheinungsdatum DATE,
-    FOREIGN KEY (MediumID)
-        REFERENCES Medium (MediumID)
-);
-
-
-
-/*
--- Inhalt der einzelnen Tabellen
 
 select * from anleitung;
 select * from AnleitungAutor;
@@ -421,5 +392,5 @@ select * from projekt;
 select * from technik;
 select * from website;
 select * from zeitschrift;
-*/
+
 
