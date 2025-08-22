@@ -260,7 +260,122 @@ MODIFY COLUMN Band varchar(5);
  rename column Name to Projektname;
  */
  
+ /*
+ erster probe Datensatz
+ */
  
+ /* 1. Mediumn anlegen */
+ 
+ Insert into Medium (Titel, Sprache, MedienArt)
+ Values ('Das große Buch der Handarbeiten', 'deutsch', 'Buch');
+ set @MediumID := last_insert_id();
+ 
+ /* Buch Anlegen */
+ 
+ insert into Buch (MediumID, Untertitel, Jahr, Verlag, Ort, ISBN, Reihe, Band)
+ values (@MediumID, 'X', NULL, 'Gruner & Jahr', 'Hamburg', Null, 'Das große Buch der Handarbeiten', 'X');
+
+/* Autor */
+ 
+ insert into Autor (Nachname, Vorname)
+ values ('Bär', 'Sigrid');
+ set @AutorID := last_insert_id();
+ 
+/*Gegenstand*/
+
+insert	into Gegenstand (Kategorie, Zweck, Stil, Modell)
+values ('Kleidung', 'OB', ' Paperbag', 'Hose');
+set @GegenstandID := last_insert_id();
+
+/*Technik*/
+
+insert into Technik (Bereich, Methode, Arbeitsweise)
+values ('nähen', 'schneidern', Null);
+set @TechnikID := last_insert_id();
+
+/*Projekt*/
+
+insert into Projekt (Projektname)
+values ('Hobbithose');
+set @ProjektID := last_insert_id();
+
+/*Anleitung*/
+
+insert into Anleitung (Titel, Seitenzahl, Grundschnitt, Modellnummer, Schnittbogen, MediumID, GegenstandID, TechnikID)
+values ('Khakifarbene Bundfaltenhose', 345, false, '42', 'E', @MediumID, @GegenstandID, @TechnikID);
+set @AnleitungID := last_insert_id();
+
+/* VErknüpfungen*/
+
+insert into anleitungautor (AnleitungID, AutorID)
+values(@AnleitungID, @AutorID);
+
+insert into anleitungprojekt (anleitungID, ProjektID)
+values (@AnleitungID, @ProjektID);
+
+insert into gegenstandtechnik (gegenstandID, technikID)
+values (@gegenstandID, @TechnikID);
+
+insert into mediumautor (mediumid, autorid)
+values (@mediumID, @AutorID);
+
+insert into mediumtechnik (mediumid, technikid)
+values (@mediumid, @technikid);
+
+
+/*
+Was ist in den Tabellen
+*/
+
+/*
+zweiter DatenSatz
+*/
+
+Insert into Medium (Titel, Sprache, MedienArt)
+values ('Japanische Hansschuhe stricken', 'deutsch', 'Buch');
+set @MediumID2 := last_insert_id();
+
+insert into Buch (MediumID, Untertitel, Jahr, Verlag, Ort, ISBN, Reihe, Band)
+values ( @MediumID2, '50 neue Projekte vom Strick-Sensei', 2019, 'Stiebner', 'Grünwald', '978-3-8307-0999-2', null, null);
+
+insert into Autor (Nachname, Vorname, Alias, Zusatz)
+values ('Kestler', 'Bernd', 'Strick-Sensei', null);
+set @AutorID2 := last_insert_id();
+
+insert into Gegenstand (Kategorie, Zweck, Stil, Modell)
+values ('Acsessoires', null, 'Ohne Finger', 'Handschuh');
+set @GegenstandID2 := last_insert_id();
+
+insert into Technik (Bereich, Methode, Arbeitsweise)
+values ('Stricken', 'Rund', 'One Piece');
+set @TechnikID2 := last_insert_id();
+
+insert into Anleitung ( Titel, Seitenzahl, Grundschnitt, Modellnummer, Schnittbogen, MediumID, GegenstandID, TechnikID)
+values ('Einfache Windrad-Fäustlinge', 52, true, '2', null,  @MediumID2, @GegenstandID2, @TechnikID2);
+set @AnleitungID2 := last_insert_id();
+
+insert into anleitungautor (AnleitungID, AutorID)
+values (@AnleitungID2, @AutorID2);
+
+insert into gegenstandtechnik (GegenstandID, TechnikID)
+values (@GegenstandID2, @TechnikID2);
+
+insert into mediumautor (MediumID, AutorID)
+values (@MediumID2, @AutorID2);
+
+insert into mediumtechnik (MediumID, TechnikID)
+values (@MediumID2, @TechnikID2);
+
+/*
+MediumGegenstand nachträglich füllen
+*/
+
+insert into MediumGegenstand (MediumID, GegenstandID)
+values (@MediumID, @GegenstandID);
+
+insert into MediumGegenstand (MediumID, GegenstandID)
+values (@MediumID2, @GegenstandID2);
+
 /*
 Schnittmuster Tabelle 
 Vorschlag von IGOR
@@ -287,6 +402,8 @@ CREATE TABLE Flyer (
 );
 
 
+
+/*
 -- Inhalt der einzelnen Tabellen
 
 select * from anleitung;
@@ -304,5 +421,5 @@ select * from projekt;
 select * from technik;
 select * from website;
 select * from zeitschrift;
-
+*/
 
