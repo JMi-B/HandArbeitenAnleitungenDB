@@ -1,6 +1,8 @@
 
+/*
 drop database if exists AnleitungDB03;
 create database AnleitungDB03 character set	utf8mb4 collate utf8mb4_bin; -- Zeichensatz festlegen, collate Binärvergleich, Groß-/Kleinschreibung und Akzente werden unterschieden
+*/
 
 use AnleitungDB03;
 

@@ -1,0 +1,48 @@
+Natürlich! Hier ist eine Zusammenfassung deines heutigen Workflows und der wichtigsten Erkenntnisse, die du für deine Dokumentation nutzen kannst:
+
+---
+
+## **Zusammenfassung des heutigen Workflows (Datenimport mit Python und MySQL)**
+
+### **1. CSV-Daten nach MySQL importieren**
+- Mit Python (`pandas` und `mysql.connector`) wurden Daten aus einer CSV-Datei (`medien_Version2.csv`) in eine MySQL-Datenbank (`AnleitungDB03`) importiert.
+- Die Datenstruktur enthielt unterschiedliche Medienarten, z.B. Buch und Zeitschrift.
+- Für jeden Datensatz wurde zuerst ein Eintrag in der Tabelle **Medium** angelegt.
+- Je nach Medienart wurde zusätzlich ein Eintrag in die passende Tabelle (**Buch** oder **Zeitschrift**) vorgenommen.
+
+### **2. Typische Fehler und Lösungen**
+- **NameError:** Der Cursor wurde einmal als `curser` und einmal als `cursor` verwendet (Tipp: in Python muss der Variablenname immer gleich sein).
+- **MySQLInterfaceError ("Unknown column 'nan' in 'field list'"):** Pandas gibt fehlende Werte als `NaN` zurück; MySQL akzeptiert nur `NULL`. Lösung: Mit `row = row.where(pd.notnull(row), None)` werden alle NaN automatisch in None (und damit in SQL in NULL) umgewandelt.
+
+
+### **4. Einrückung in Python**
+- Fehlerhafte Einrückung führte dazu, dass Zusatzdatensätze nur für den letzten Eintrag in die Tabellen `Buch` und `Zeitschrift` geschrieben wurden.
+- Richtige Einrückung sorgt dafür, dass für jeden Datensatz die passenden Einträge angelegt werden.
+
+### **5. Ergebnis nach Import**
+- Alle Datensätze wurden erfolgreich in die MySQL-Tabellen importiert.
+- Nach Korrektur der Einrückung waren alle Medien auch in den jeweiligen spezifischen Tabellen (z.B. Buch, Zeitschrift) vorhanden.
+- Es wurden doppelte und dreifache Datensätze festgestellt.
+
+### **6. Doppelte Datensätze in MySQL**
+- Löschen von Dubletten: Mit einem SQL-Statement kann man alle doppelten Datensätze löschen und jeweils den mit der kleinsten ID behalten:
+  ```sql
+  DELETE m1
+  FROM Medium m1
+  JOIN Medium m2
+    ON m1.Titel = m2.Titel
+   AND m1.MedienArt = m2.MedienArt
+   AND m1.Sprache = m2.Sprache
+   AND m1.ID > m2.ID;
+  ```
+
+### **7. Tipps & Best Practices**
+- Vor dem Löschen immer ein Backup machen!
+- Für die Zukunft UNIQUE-Constraints einrichten, um Dubletten zu verhindern.
+- Batch-Inserts statt Einzel-Inserts für große Datenmengen.
+- Die Einrückung in Python-Code ist entscheidend für die Logik.
+
+---
+
+**Falls du spezielle Codebeispiele oder weitere Details brauchst, sag Bescheid!**  
+Diese Zusammenfassung kannst du direkt in deine Doku übernehmen oder anpassen.
