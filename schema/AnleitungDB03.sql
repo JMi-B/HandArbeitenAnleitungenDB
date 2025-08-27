@@ -290,7 +290,7 @@ CREATE TABLE Flyer (
 
 
 -- Inhalt der einzelnen Tabellen
-
+/*
 select * from anleitung;
 select * from AnleitungAutor;
 select * from Anleitungprojekt;
@@ -306,5 +306,7 @@ select * from projekt;
 select * from technik;
 select * from website;
 select * from zeitschrift;
+*/
+
 
 
