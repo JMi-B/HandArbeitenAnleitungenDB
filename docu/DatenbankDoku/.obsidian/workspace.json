@@ -13,7 +13,7 @@
             "state": {
               "type": "markdown",
               "state": {
-                "file": "DatenbankDucu/Befehle und Codes.md",
+                "file": "DatenbankDocu/Befehle und Codes.md",
                 "mode": "source",
                 "source": false
               },
@@ -94,7 +94,7 @@
             "state": {
               "type": "backlink",
               "state": {
-                "file": "DatenbankDucu/Befehle und Codes.md",
+                "file": "DatenbankDocu/Befehle und Codes.md",
                 "collapseAll": false,
                 "extraContext": false,
                 "sortOrder": "alphabetical",
@@ -113,7 +113,7 @@
             "state": {
               "type": "outgoing-link",
               "state": {
-                "file": "DatenbankDucu/Befehle und Codes.md",
+                "file": "DatenbankDocu/Befehle und Codes.md",
                 "linksCollapsed": false,
                 "unlinkedCollapsed": true
               },
@@ -142,7 +142,7 @@
             "state": {
               "type": "outline",
               "state": {
-                "file": "DatenbankDucu/Befehle und Codes.md",
+                "file": "DatenbankDocu/Befehle und Codes.md",
                 "followCursor": false,
                 "showSearch": false,
                 "searchQuery": ""
@@ -171,6 +171,6 @@
   },
   "active": "b9420efd4312ac6f",
   "lastOpenFiles": [
-    "DatenbankDucu/Das ist meine Doku für meine Datenbank.md"
+    "DatenbankDocu/Das ist meine Doku für meine Datenbank.md"
   ]
 }
