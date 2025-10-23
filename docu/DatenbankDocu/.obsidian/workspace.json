@@ -13,12 +13,12 @@
             "state": {
               "type": "markdown",
               "state": {
-                "file": "DatenbankDocu/Befehle und Codes.md",
+                "file": "DatenbankDocu/Das ist meine Docu für meine Datenbank.md",
                 "mode": "source",
                 "source": false
               },
               "icon": "lucide-file",
-              "title": "Befehle und Codes"
+              "title": "Das ist meine Docu für meine Datenbank"
             }
           }
         ]
@@ -169,8 +169,10 @@
       "bases:Create new base": false
     }
   },
-  "active": "b9420efd4312ac6f",
+  "active": "91e0567f2ea41023",
   "lastOpenFiles": [
-    "DatenbankDocu/Das ist meine Doku für meine Datenbank.md"
+    "DatenbankDocu/Sicherung 2025-09-01.md",
+    "DatenbankDocu/Befehle und Codes.md",
+    "DatenbankDocu/Das ist meine Docu für meine Datenbank.md"
   ]
 }

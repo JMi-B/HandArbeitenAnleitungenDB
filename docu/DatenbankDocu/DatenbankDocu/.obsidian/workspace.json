@@ -27,32 +27,16 @@
             "state": {
               "type": "markdown",
               "state": {
-                "file": "Das ist meine Doku für meine Datenbank.md",
+                "file": "Sicherung 2025-09-01.md",
                 "mode": "source",
                 "source": false
               },
               "icon": "lucide-file",
-              "title": "Das ist meine Doku für meine Datenbank"
+              "title": "Sicherung 2025-09-01"
             }
           }
         ],
         "currentTab": 1
-      },
-      {
-        "id": "785e977d6b066d78",
-        "type": "tabs",
-        "children": [
-          {
-            "id": "76a5bc44082e55a9",
-            "type": "leaf",
-            "state": {
-              "type": "graph",
-              "state": {},
-              "icon": "lucide-git-fork",
-              "title": "Graph-Ansicht"
-            }
-          }
-        ]
       }
     ],
     "direction": "vertical"
@@ -75,7 +59,7 @@
                 "autoReveal": false
               },
               "icon": "lucide-folder-closed",
-              "title": "Dateiexplorer"
+              "title": "Files"
             }
           },
           {
@@ -191,20 +175,21 @@
   },
   "left-ribbon": {
     "hiddenItems": {
-      "graph:Graph-Ansicht öffnen": false,
-      "canvas:Neuen Canvas erstellen": false,
-      "templates:Vorlage einfügen": false,
-      "command-palette:Befehlspalette öffnen": false,
-      "bases:Create new base": false,
-      "daily-notes:Heutige Notiz öffnen": false,
-      "switcher:Schnellauswahl öffnen": false
+      "switcher:Open quick switcher": false,
+      "graph:Open graph view": false,
+      "canvas:Create new canvas": false,
+      "daily-notes:Open today's daily note": false,
+      "templates:Insert template": false,
+      "command-palette:Open command palette": false,
+      "bases:Create new base": false
     }
   },
   "active": "9c0823b65e3f2666",
   "lastOpenFiles": [
+    "Das ist meine Docu für meine Datenbank.md",
+    "Befehle und Codes.md",
     "Sicherung 2025-09-01.md",
     "MakeDumpAndPush 1.sh",
-    "Befehle und Codes.md",
     "MakeDumpAndPush.sh",
     "Unbenannt",
     "Das ist meine Doku für meine Datenbank.md",
