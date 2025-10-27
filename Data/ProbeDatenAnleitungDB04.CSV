@@ -1,4 +1,8 @@
-Titel;Sprache;MedienArt;Untertitel;Jahr;Verlag;Ort;ISBN;Reihe;Band;Nachname;Vorname;Alias;Zusatz;Titel;Seitenzahl;Grundschnitt;Modellnummer;Schnittbogen
-Das große Buch der Handarbeiten;deutsch;Buch;X;;Gruner & Jahr;Hamburg;;Das große Buch der Handarbeiten;10;Bär;Sigrid;;;Khakifarbene Bundfaltenhose;345;false;42;E
-Japanische Hansschuhe stricken;deutsch;Buch;50 neue Projekte vom Strick-Sensei;2019;Stiebner;Grünwald;978-3-8307-0999-2;;;Kestler;Bernd;Strick-Sensei;;Einfache Windrat-Fäustlige;52;true;2
-English Paper Peircing;englisch;Buch;Muster aus geometrischen Fromen;2011;Christopherus;Feiburg;978-3-8410-6081-5;;;Schmidt;Claudia;;;Nadelkissen;69;false;;CD
+Titel;Sprache;MedienArt;Untertitel;Jahr;Verlag;Ort;ISBN;Reihe;Band;Untertitel;Jahrgang;Monat;Heftnummer;Sonderheft;Nachname;Vorname;Alias;Firma;Zusatz;Titel;Seitenzahl  ;Grundschnitt;Modellnummer;Schnittbogen;
+Das große Buch der Handarbeiten;deutsch;Buch;X;;Gruner & Jahr;Hamburg;;Das große Buch der Handarbeiten;10;;;;;;Bär;Sigrid;;;;Khakifarbene Bundfaltenhose;345;false;42;E;
+Japanische Hansschuhe stricken;deutsch;Buch;50 neue Projekte vom Strick-Sensei;2019;Stiebner;Grünwald;978-3-8307-0999-2;;;;;;;;Kestler;Bernd;Strick-Sensei;;;Einfache Windrat-Fäustlige;52;true;2;;
+English Paper Peircing;englisch;Buch;Muster aus geometrischen Fromen;2011;Christopherus;Feiburg;978-3-8410-6081-5;;;;;;;;Schmidt;Claudia;;;;Nadelkissen;69;false;;CD;
+Anna;;Zeitschrift;;;;;;;;;2010;12;50;false;;;;anna;;Wende-Mantel;54;false;;;
+Designer Knitting;;Zeitschrift;;;;;;;;;2019;2;;false;;;;Desingner Knitting deutsch;;Hexagon-Tuch;8;false;;;
+Burda;;Zeitschrift;;;;;;;;accessoires;2018;5;34;false;;;;burda;;Cozy Home;11;false;;;
+Patchwork Magazin;;Zeitschrift;;;;;;;;Taschen selber machen;2010;;25;true;;;;OZ-Verlag;;Technik trifft Tradition;36;false;;;

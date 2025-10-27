@@ -19,56 +19,71 @@ mycursor= mydb.cursor()
 df = pd.read_csv(csv_path, encoding='latin-1', sep=";")
 
 
-def MediumInsert(medienart,titel):    
+def MediumInsert(row,medienart,titel):    
     mycursor.execute(
     "insert into Medium (Titel, MedienArt) values (%s, %s)",
     (titel, medienart)
     )
     mydb.commit()
+    thisrow = row
     medium_id = mycursor.lastrowid
-    return medium_id
+    return medium_id, thisrow
 
-def BuchInsert(medium_id):
+def BuchInsert(thisrow,medium_id):
      mycursor.execute(
             "insert into Buch (MediumID, Untertitel, Jahr, Verlag, Ort, ISBN, Reihe, Band) values (%s, %s, %s, %s, %s, %s, %s, %s)",
             (
             medium_id,
-            row.get('Untertitel', None),
-            row.get('Jahr', None),
-            row.get('Verlag', None),
-            row.get('Ort', None),
-            row.get('ISBN', None),
-            row.get('Reihe', None),
-            row.get('Band', None)
+            thisrow.get('Untertitel', None),
+            thisrow.get('Jahr', None),
+            thisrow.get('Verlag', None),
+            thisrow.get('Ort', None),
+            thisrow.get('ISBN', None),
+            thisrow.get('Reihe', None),
+            thisrow.get('Band', None)
             )
         )
      mydb.commit()
 
-def AutorInsert():
+def ZeitschriftInsert(thisrow,medium_id):
+    mycursor.execute(
+            "INSERT INTO Zeitschrift (MediumID, Heftthema, Jahrgang, Monat, Heftnummer, Sonderheft) VALUES (%s, %s, %s, %s, %s, %s)",
+            (
+                medium_id,
+                thisrow.get('Heftthema', None),
+                thisrow.get('Jahrgang', None),
+                thisrow.get('Monat', None),
+                thisrow.get('Heftnummer', None),
+                bool(row.get('Sonderheft', False))
+            )
+        )
+    mydb.commit()
+
+def AutorInsert(thisrow):
     mycursor.execute(
     "insert into Autor (Nachname, Vorname, Alias, Zusatz, Firma) values(%s,%s,%s,%s,%s)",
         (
-        row.get('Nachname', None),
-        row.get('Vorname', None),
-        row.get('Alias', None),
-        row.get('Zusatz', None),
-        row.get('Firma', None),
+        thisrow.get('Nachname', None),
+        thisrow.get('Vorname', None),
+        thisrow.get('Alias', None),
+        thisrow.get('Zusatz', None),
+        thisrow.get('Firma', None),
         )
     )
     mydb.commit()
     autor_id = mycursor.lastrowid
     return autor_id
 
-def AnleitungInsert(medium_id):
+def AnleitungInsert(thisrow,medium_id):
     mycursor.execute(
     "insert into Anleitung (MediumID,Titel,Seitenzahl,Grundschnitt,Modellnummer,Schnittbogen) values(%s,%s,%s,%s,%s,%s)",
         (
         medium_id,
-        row.get('Titel', None),
-        row.get('Seitenzahl', None),
-        row.get('Grundschnitt', None),
-        row.get('Modellnummer', None),
-        row.get('Schnittbogen', None),
+        thisrow.get('Titel', None),
+        thisrow.get('Seitenzahl', None),
+        thisrow.get('Grundschnitt', None),
+        thisrow.get('Modellnummer', None),
+        thisrow.get('Schnittbogen', None),
         )
     )
     mydb.commit()
@@ -88,7 +103,6 @@ def MediumAutorInsert(medium_id,autor_id):
     return medium_autor_id
 
 def AnleitungAutorInsert(anleitung_id,autor_id):
-    print(anleitung_id,autor_id)
     mycursor.execute(
         "Insert into anleitungautor (AnleitungID,AutorID) values (%s,%s)",
         (
@@ -104,14 +118,19 @@ for daten, row in df.iterrows():
     medienart = row ['MedienArt']
     titel = row ['Titel']
        
-    medium_id = MediumInsert(medienart,titel)
+    medium_id = MediumInsert(row,medienart,titel)
+    thisrow = row
     
     if medienart == 'Buch':
-        BuchInsert(medium_id)
+        BuchInsert(thisrow,medium_id)
+    
+    elif medienart == 'Zeitschrift':
+        ZeitschriftInsert(thisrow,medium_id)
         
-    autor_id = AutorInsert()   
         
-    anleitung_id = AnleitungInsert(medium_id) 
+    autor_id = AutorInsert(thisrow)   
+        
+    anleitung_id = AnleitungInsert(thisrow,medium_id) 
         
     medium_autor_id = MediumAutorInsert(medium_id,autor_id)
 
