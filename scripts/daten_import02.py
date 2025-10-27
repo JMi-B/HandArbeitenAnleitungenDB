@@ -16,26 +16,20 @@ mycursor= mydb.cursor()
 
 
 # csv einlesen
-df= pd.read_csv(csv_path, encoding='latin-1', sep=";")
+df = pd.read_csv(csv_path, encoding='latin-1', sep=";")
 
 
-
-for daten, row in df.iterrows():
-    row = row.where(pd.notnull(row), None)  # <--- automatisch für alle Spalten!
-    
-    medienart = row ['MedienArt']
-    titel = row ['Titel']
-    # Medium anlegen
+def MediumInsert(medienart,titel):    
     mycursor.execute(
     "insert into Medium (Titel, MedienArt) values (%s, %s)",
     (titel, medienart)
     )
+    mydb.commit()
     medium_id = mycursor.lastrowid
+    return medium_id
 
-    # Buch oder Zeitschrift anlegen
-
-    if medienart == 'Buch':
-        mycursor.execute(
+def BuchInsert(medium_id):
+     mycursor.execute(
             "insert into Buch (MediumID, Untertitel, Jahr, Verlag, Ort, ISBN, Reihe, Band) values (%s, %s, %s, %s, %s, %s, %s, %s)",
             (
             medium_id,
@@ -48,8 +42,9 @@ for daten, row in df.iterrows():
             row.get('Band', None)
             )
         )
-    
-    #Autor
+     mydb.commit()
+
+def AutorInsert():
     mycursor.execute(
     "insert into Autor (Nachname, Vorname, Alias, Zusatz, Firma) values(%s,%s,%s,%s,%s)",
         (
@@ -60,8 +55,11 @@ for daten, row in df.iterrows():
         row.get('Firma', None),
         )
     )
+    mydb.commit()
+    autor_id = mycursor.lastrowid
+    return autor_id
 
-    #Anleitung
+def AnleitungInsert(medium_id):
     mycursor.execute(
     "insert into Anleitung (MediumID,Titel,Seitenzahl,Grundschnitt,Modellnummer,Schnittbogen) values(%s,%s,%s,%s,%s,%s)",
         (
@@ -73,6 +71,53 @@ for daten, row in df.iterrows():
         row.get('Schnittbogen', None),
         )
     )
+    mydb.commit()
+    anleitung_id = mycursor.lastrowid
+    return anleitung_id
+
+
+def MediumAutorInsert(medium_id,autor_id):
+    mycursor.execute(
+        "Insert into mediumautor (MediumID,AutorID) values (%s,%s)",
+        (
+        medium_id,
+        autor_id
+        )
+    )
+    medium_autor_id = (medium_id,autor_id)
+    return medium_autor_id
+
+def AnleitungAutorInsert(anleitung_id,autor_id):
+    print(anleitung_id,autor_id)
+    mycursor.execute(
+        "Insert into anleitungautor (AnleitungID,AutorID) values (%s,%s)",
+        (
+            anleitung_id,
+            autor_id
+        )
+    )
+    anleitung_autor_id = (anleitung_id,autor_id)
+    return anleitung_autor_id
+
+
+for daten, row in df.iterrows():
+    medienart = row ['MedienArt']
+    titel = row ['Titel']
+       
+    medium_id = MediumInsert(medienart,titel)
+    
+    if medienart == 'Buch':
+        BuchInsert(medium_id)
+        
+    autor_id = AutorInsert()   
+        
+    anleitung_id = AnleitungInsert(medium_id) 
+        
+    medium_autor_id = MediumAutorInsert(medium_id,autor_id)
+
+    anleitung_autor_id = AnleitungAutorInsert(anleitung_id, autor_id)
+    
+
    
 mydb.commit()
 mycursor.close()
