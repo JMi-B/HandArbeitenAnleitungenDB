@@ -23,7 +23,7 @@ df = pd.read_csv(csv_path, encoding='latin-1', sep=";")
 
 def MediumInsert(thistitel,thismedienart):    
     mycursor.execute(
-    "insert into Medium (TitelMedium, MedienArt) values (%s, %s)",
+    "insert into medium (TitelMedium, MedienArt) values (%s, %s)",
     (thistitel, thismedienart)
     )
     mydb.commit()
@@ -33,9 +33,13 @@ def MediumInsert(thistitel,thismedienart):
 def CheckMedienArt(diesmedienart,diesrow,diesmedium_id):
         match diesmedienart:
             case "Buch":
-                BuchInsert(diesmedium_id,diesrow)
+                buchmedium_id = BuchExist(diesmedium_id)
+                if buchmedium_id < 1:
+                    BuchInsert(diesmedium_id,diesrow)
             case "Zeitschrift":
-                ZeitschriftInsert(diesmedium_id,diesrow)
+                zeitschriftmedium_id = ZeitschriftExist(diesmedium_id)
+                if zeitschriftmedium_id < 1  :
+                    ZeitschriftInsert(diesmedium_id,diesrow)
             case _:
                 print(" diese Medienart ist nicht bekannt")
 
@@ -104,7 +108,7 @@ def AnleitungInsert(thismedium_id,thisrow):
 
 def MediumAutorInsert(diesmedium_id,diesautor_id):
     mycursor.execute(
-        "Insert into mediumautor (MediumID,AutorID) values (%s,%s)",
+        "Insert into mediumautor (MediumID,AutorID)  values (%s,%s)",
         (
         diesmedium_id,
         diesautor_id
@@ -127,38 +131,94 @@ def AnleitungAutorInsert(diesanleitung_id,diesautor_id):
 
 def AutorExist(thisrow):
     mycursor.execute(
-        "Select * from autor where (Nachname = %s and Vorname =  %s) ",
+        "Select * from autor where (Nachname = %s and Vorname =  %s) or Firma = %s ",
         (
         thisrow.get('Nachname'),
         thisrow.get('Vorname'),
+        thisrow.get('Firma'),
         )
     )
     result=mycursor.fetchall()
     AnzahlResult=len(result)
     if AnzahlResult < 1:
         return 0
-   # print(AnzahlResult)
-   # print(result)
     return result[0]['AutorID']
 
+def MediumExist(thistitel, thismedienart):
+    mycursor.execute(
+        "SELECT * from medium WHERE TitelMedium = %s and MedienArt = %s",
+        (thistitel,thismedienart)
+    )
+    result=mycursor.fetchall()
+    AnzahlResult=len(result)
+    # print(AnzahlResult)
+    # print(result)
+    if AnzahlResult < 1:
+      return 0
+    return result [0]['MediumID']
+
+def BuchExist(diesmedium_id):
+    print(diesmedium_id)
+    mycursor.execute(
+        "SELECT buch.MediumID FROM buch WHERE buch.MediumID = %s",
+        [diesmedium_id]
+    )
+    result=mycursor.fetchall()
+    AnzahlResult=len(result)
+    print(AnzahlResult)
+    print(result)
+    if AnzahlResult < 1:
+      return 0
+    return result [0]['MediumID']
+
+def ZeitschriftExist(diesmedium_id):
+    mycursor.execute(
+        "SELECT zeitschrift.MediumID FROM zeitschrift WHERE zeitschrift.MediumID = %s;",
+        [diesmedium_id]
+    )
+    result=mycursor.fetchall()
+    AnzahlResult=len(result)
+    print(AnzahlResult)
+    print(result)
+    if AnzahlResult < 1:
+      return 0
+    return result [0]['MediumID']
+
+def MediumAutorExist(diesmedium_id,diesmautor_id):
+    mycursor.execute(
+        "SELECT MediumID, AutorID FROM mediumautor WHERE MediumID = %s AND AutorID = %s;",
+        (diesmedium_id, diesmautor_id)
+    )
+    result=mycursor.fetchall()
+    AnzahlResult=len(result)
+    print(AnzahlResult)
+    print(result)
+    if AnzahlResult < 1:
+      return 0
+    return result [0]['MediumID']
+
+# Hauptprogramm
 
 for daten, row in df.iterrows():
     medienart = row ['MedienArt']
     titelmedium = row ['TitelMedium']
 
-        
-    medium_id = MediumInsert(titelmedium,medienart)
+    medium_id = MediumExist(titelmedium, medienart)
+    if medium_id < 1:           
+        medium_id = MediumInsert(titelmedium,medienart)
         
     CheckMedienArt(medienart,row,medium_id)
 
-    
+     
     autor_id = AutorExist(row)
     if autor_id < 1:
         autor_id = AutorInsert(row)   
         
     anleitung_id = AnleitungInsert(medium_id,row) 
         
-    medium_autor_id = MediumAutorInsert(medium_id,autor_id)
+    medium_autor_id = MediumAutorExist(medium_id,autor_id)
+    if medium_autor_id < 1:
+        medium_autor_id = MediumAutorInsert(medium_id,autor_id)
 
     anleitung_autor_id = AnleitungAutorInsert(anleitung_id, autor_id)
     
