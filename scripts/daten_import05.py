@@ -2,7 +2,7 @@ import pandas as pd
 import mysql.connector
 # Mit Abfrage ob DS schon existiert
 
-csv_path = "C:/Users/juliane.bonenkamp/HandArbeitenAnleitungenDB/Data/ProbeDatenAnleitungDB04.CSV"
+csv_path = "C:/Users/juliane.bonenkamp/HandArbeitenAnleitungenDB/Data/ProbeDatenAnleitungDB05.CSV"
 
 # Verbindung zur MySql-Datenbank CC
 
@@ -62,13 +62,13 @@ def BuchInsert(diesmedium_id,diesrow):
 
 def ZeitschriftInsert(diesmedium_id,diesrow):
     mycursor.execute(
-            "INSERT INTO Zeitschrift (MediumID, Untertitel, Jahrgang, Monat, Heftnummer, Sonderheft) VALUES (%s, %s, %s, %s, %s, %s)",
+            "INSERT INTO Zeitschrift (MediumID, HeftThema, Jahrgang, Monat, HeftNR, Sonderheft) VALUES (%s, %s, %s, %s, %s, %s)",
             (
                 diesmedium_id,
-                diesrow.get('Untertitel', None),
+                diesrow.get('HeftThema', None),
                 diesrow.get('Jahrgang', None),
                 diesrow.get('Monat', None),
-                diesrow.get('Heftnummer', None),
+                diesrow.get('HeftNR', None),
                 bool(row.get('Sonderheft', False))
             )
         )
@@ -91,13 +91,13 @@ def AutorInsert(thisrow):
 
 def AnleitungInsert(thismedium_id,thisrow):
     mycursor.execute(
-    "insert into Anleitung (MediumID,NameAnleitung,Seitenzahl,Grundschnitt,Modellnummer,Schnittbogen) values(%s,%s,%s,%s,%s,%s)",
+        "INSERT INTO anleitung (MediumID,NameAnleitung,Seitenzahl,Grundschnitt,ModelNR,Schnittbogen) values(%s,%s,%s,%s,%s,%s)",
         (
         thismedium_id,
         thisrow.get('NameAnleitung', None),
         thisrow.get('Seitenzahl', None),
         thisrow.get('Grundschnitt', None),
-        thisrow.get('Modellnummer', None),
+        thisrow.get('ModelNR', None),
         thisrow.get('Schnittbogen', None),
         )
     )
@@ -156,15 +156,12 @@ def MediumExist(thistitel, thismedienart):
     return result [0]['MediumID']
 
 def BuchExist(diesmedium_id):
-    print(diesmedium_id)
     mycursor.execute(
         "SELECT buch.MediumID FROM buch WHERE buch.MediumID = %s",
         [diesmedium_id]
     )
     result=mycursor.fetchall()
     AnzahlResult=len(result)
-    print(AnzahlResult)
-    print(result)
     if AnzahlResult < 1:
       return 0
     return result [0]['MediumID']
@@ -202,8 +199,6 @@ def AnleitungExist(thismedium_id,thisrow):
     )
     result=mycursor.fetchall()
     AnzahlResult=len(result)
-    print(AnzahlResult)
-    print(result)
     if AnzahlResult < 1:
       return 0
     return result [0]['AnleitungID']
@@ -217,7 +212,7 @@ def AnleitungAutorExist(diesanleitung_id, diesautor_id):
     AnzahlResult=len(result)
     if AnzahlResult < 1:
       return 0
-    return result [0]['AnleitungID','AutorID']
+    return result [0]['AnleitungID']
 
 
 # Hauptprogramm
@@ -247,7 +242,7 @@ for daten, row in df.iterrows():
         medium_autor_id = MediumAutorInsert(medium_id,autor_id)
 
     anleitung_autor_id = AnleitungAutorExist(anleitung_id,autor_id)
-        if anleitung_autor_id < 1:
+    if anleitung_autor_id < 1:
         anleitung_autor_id = AnleitungAutorInsert(anleitung_id, autor_id)
     
 
