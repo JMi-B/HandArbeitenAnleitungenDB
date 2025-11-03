@@ -1,6 +1,6 @@
 import pandas as pd
 import mysql.connector
-# Mit Abfrage ob DS schon existiert
+# Anleitungen werden doppelt erzeugt
 
 csv_path = "C:/Users/juliane.bonenkamp/HandArbeitenAnleitungenDB/Data/ProbeDatenAnleitungDB05.CSV"
 
@@ -45,7 +45,7 @@ def CheckMedienArt(diesmedienart,diesrow,diestitel):
                 ZeitschriftInsert(diesmedium_id,diesrow)
             
                 return diesmedium_id
-            return medium_id
+            return zeitschriftmedium_id
         case _:
             print(" diese Medienart ist nicht bekannt")
 
@@ -159,10 +159,11 @@ def AutorExist(thisrow):
 
 def BuchExist(diesrow):
     mycursor.execute(
-        "SELECT * FROM buch WHERE (Untertitel = %s AND Jahr = %s) OR ISBN = %s;",
+        "SELECT * FROM buch WHERE (Untertitel = %s AND (Jahr = %s OR  Verlag = %s)) OR ISBN = %s;",
         (
             diesrow.get('Untertitel'),
             diesrow.get('Jahr'),
+            diesrow.get('Verlag'),
             diesrow.get('ISBN'),
         )
     )
@@ -210,6 +211,7 @@ def AnleitungExist(thismedium_id,thisrow):
     result=mycursor.fetchall()
     AnzahlResult=len(result)
     if AnzahlResult < 1:
+      # print('MeriumID: ' + str(medium_id))
       return 0
     return result [0]['AnleitungID']
 
