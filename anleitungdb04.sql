@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Host: 127.0.0.1
--- Erstellungszeit: 03. Nov 2025 um 15:57
+-- Erstellungszeit: 05. Nov 2025 um 16:31
 -- Server-Version: 10.4.32-MariaDB
 -- PHP-Version: 8.2.12
 
@@ -109,7 +109,10 @@ INSERT INTO `anleitung` (`AnleitungID`, `NameAnleitung`, `Seitenzahl`, `Grundsch
 (65, '11 Khakifarbene Bundfaltenhose', 445, 0, '42', 'E', 39),
 (66, '12 Khakifarbene Bundfaltenhose', 455, 0, '42', 'E', 40),
 (67, '13 Khakifarbene Bundfaltenhose', 465, 0, '42', 'E', 41),
-(68, '14 Khakifarbene Bundfaltenhose', 475, 0, '42', 'E', 42);
+(68, '14 Khakifarbene Bundfaltenhose', 475, 0, '42', 'E', 42),
+(69, 'Gestrickte Teufelsmütze aus Rainbow Baumwolle', 5, 1, NULL, NULL, 43),
+(70, 'Gestrickte DROPS Mütze mit Dominomuster aus Delight', 4, 0, '0-882', NULL, 44),
+(71, 'Grante', 7, 1, 'bd-09', NULL, 45);
 
 -- --------------------------------------------------------
 
@@ -194,7 +197,10 @@ INSERT INTO `anleitungautor` (`AnleitungID`, `AutorID`) VALUES
 (65, 1),
 (66, 1),
 (67, 1),
-(68, 1);
+(68, 1),
+(69, 13),
+(70, 14),
+(71, 14);
 
 -- --------------------------------------------------------
 
@@ -227,7 +233,9 @@ INSERT INTO `autor` (`AutorID`, `Nachname`, `Vorname`, `Alias`, `Zusatz`, `Firma
 (9, NULL, NULL, NULL, NULL, 'OZ-Verlag'),
 (10, NULL, NULL, NULL, NULL, 'Lena'),
 (11, NULL, NULL, NULL, NULL, 'cravty'),
-(12, NULL, NULL, NULL, NULL, 'P&N');
+(12, NULL, NULL, NULL, NULL, 'P&N'),
+(13, NULL, NULL, NULL, NULL, 'hobbii'),
+(14, NULL, NULL, NULL, NULL, 'Drops-Desing');
 
 -- --------------------------------------------------------
 
@@ -341,7 +349,10 @@ INSERT INTO `medium` (`MediumID`, `TitelMedium`, `MedienArt`) VALUES
 (39, 'Das große Buch der Handarbeiten', 'Buch'),
 (40, 'Das große Buch der Handarbeiten', 'Buch'),
 (41, 'Das große Buch der Handarbeiten', 'Buch'),
-(42, 'Das große Buch der Handarbeiten', 'Buch');
+(42, 'Das große Buch der Handarbeiten', 'Buch'),
+(43, 'GestrickteTeufelsmtzeRainbowBaumwolle', ''),
+(44, 'DROPSGestrickteMützeDominomuster', ''),
+(45, 'Granite', '');
 
 -- --------------------------------------------------------
 
@@ -406,23 +417,10 @@ INSERT INTO `mediumautor` (`MediumID`, `AutorID`) VALUES
 (39, 1),
 (40, 1),
 (41, 1),
-(42, 1);
-
--- --------------------------------------------------------
-
---
--- Tabellenstruktur für Tabelle `pdftexte`
---
-
-CREATE TABLE `pdftexte` (
-  `MediumID` int(11) NOT NULL,
-  `Dateiname` varchar(64) NOT NULL,
-  `Pfad` varchar(128) NOT NULL,
-  `Dateiformat` varchar(12) NOT NULL,
-  `Datum` varchar(20) NOT NULL,
-  `Ausdruck` tinyint(1) NOT NULL,
-  `Ganz_Text` text NOT NULL
-) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_general_ci;
+(42, 1),
+(43, 13),
+(44, 14),
+(45, 14);
 
 -- --------------------------------------------------------
 
@@ -436,6 +434,31 @@ CREATE TABLE `schnittmuster` (
   `Verlag` varchar(45) DEFAULT NULL,
   `Jahr` year(4) DEFAULT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_general_ci;
+
+-- --------------------------------------------------------
+
+--
+-- Tabellenstruktur für Tabelle `textdatei`
+--
+
+CREATE TABLE `textdatei` (
+  `MediumID` int(11) NOT NULL,
+  `Dateiname` varchar(64) NOT NULL,
+  `Pfad` varchar(128) NOT NULL,
+  `Dateiformat` varchar(12) NOT NULL,
+  `Datum` varchar(20) NOT NULL,
+  `Ausdruck` tinyint(1) NOT NULL,
+  `GanzerText` text NOT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_general_ci;
+
+--
+-- Daten für Tabelle `textdatei`
+--
+
+INSERT INTO `textdatei` (`MediumID`, `Dateiname`, `Pfad`, `Dateiformat`, `Datum`, `Ausdruck`, `GanzerText`) VALUES
+(43, 'GestrickteTeufelsmtzeRainbowBaumwolle.pdf', 'C:\\Users\\juliane.bonenkamp\\HandArbeitenAnleitungenDB\\Data\\strick\\Mützen\\GestrickteTeufelsmtzeRainbowBaumwolle.pdf', 'pdf', '2018', 0, ''),
+(44, 'DROPSGestrickteMützeDominomuster.pdf', 'C:\\Users\\juliane.bonenkamp\\HandArbeitenAnleitungenDB\\Data\\strick\\Mützen\\DROPSGestrickteMützeDominomuster.pdf', 'pdf', '10.12.2019', 0, ''),
+(45, 'Granite.pdf', '\"C:\\Users\\juliane.bonenkamp\\HandArbeitenAnleitungenDB\\Data\\strick\\Mützen\\Granite.pdf\"', 'pdf', '10.12.2019', 0, '');
 
 -- --------------------------------------------------------
 
@@ -546,15 +569,15 @@ ALTER TABLE `mediumautor`
   ADD KEY `mediumautor_ibfk_2` (`AutorID`);
 
 --
--- Indizes für die Tabelle `pdftexte`
---
-ALTER TABLE `pdftexte`
-  ADD PRIMARY KEY (`MediumID`);
-
---
 -- Indizes für die Tabelle `schnittmuster`
 --
 ALTER TABLE `schnittmuster`
+  ADD PRIMARY KEY (`MediumID`);
+
+--
+-- Indizes für die Tabelle `textdatei`
+--
+ALTER TABLE `textdatei`
   ADD PRIMARY KEY (`MediumID`);
 
 --
@@ -577,19 +600,19 @@ ALTER TABLE `zeitschrift`
 -- AUTO_INCREMENT für Tabelle `anleitung`
 --
 ALTER TABLE `anleitung`
-  MODIFY `AnleitungID` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=69;
+  MODIFY `AnleitungID` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=72;
 
 --
 -- AUTO_INCREMENT für Tabelle `autor`
 --
 ALTER TABLE `autor`
-  MODIFY `AutorID` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=13;
+  MODIFY `AutorID` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=15;
 
 --
 -- AUTO_INCREMENT für Tabelle `medium`
 --
 ALTER TABLE `medium`
-  MODIFY `MediumID` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=43;
+  MODIFY `MediumID` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=46;
 
 --
 -- Constraints der exportierten Tabellen

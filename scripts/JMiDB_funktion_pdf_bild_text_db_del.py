@@ -22,7 +22,7 @@ path = "ProbePDF"
 
 files = os.listdir(path)
 
-### vier ganzer text ganzertext
+
 def textAusBild(pathtoimage):
     img = Image.open(pathtoimage)
     text = pytesseract.image_to_string(img, lang="deu")

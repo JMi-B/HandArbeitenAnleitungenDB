@@ -1,10 +1,7 @@
 import pandas as pd
 import mysql.connector
-# Mit Abfrage ob DS schon existiert
 
-csv_path = "C:/Users/juliane.bonenkamp/HandArbeitenAnleitungenDB/Data/ProbeDatenAnleitungDB05.CSV"
-
-# Verbindung zur MySql-Datenbank CC
+csv_path = "C:/Users/juliane.bonenkamp/HandArbeitenAnleitungenDB/Data/ProbeDatenAnleitungDB06.CSV"
 
 mydb =mysql.connector.connect(
     host='localhost',
@@ -14,33 +11,53 @@ mydb =mysql.connector.connect(
  )
 mycursor= mydb.cursor(dictionary=True)
 
-
-# csv einlesen
 df = pd.read_csv(csv_path, encoding='latin-1', sep=";")
 
+# Version 09. Datein als neue MedienArt eingefügt
+# Angepasst wird die Funktionen:
+## CheckMediumArt
+# Neue Funktionen
+## DateiIndert
+## DateiExist
 
 def MediumInsert(thistitel,thismedienart):    
     mycursor.execute(
-    "insert into medium (TitelMedium, MedienArt) values (%s, %s)",
+    "INSERT INTO medium (TitelMedium, MedienArt) VALUES (%s, %s)",
     (thistitel, thismedienart)
     )
     mydb.commit()
     medium_id = mycursor.lastrowid
     return medium_id
+    
 
-def CheckMedienArt(thistitel,thismedienart,thisrow,thismedium_id):
-        match thismedienart:
-            case "Buch":
-                buchmedium_id = BuchExist(thisrow)
-                if buchmedium_id < 1:
-                    MediumInsert(thistitel,thismedienart)
-                    BuchInsert(thismedium_id)
-            # case "Zeitschrift":
-            #     zeitschriftmedium_id = ZeitschriftExist(diesmedium_id)
-            #     if zeitschriftmedium_id < 1  :
-            #         ZeitschriftInsert(diesmedium_id,diesrow)
-            case _:
-                print(" diese Medienart ist nicht bekannt")
+def CheckMedienArt(diesmedienart,diesrow,diestitel):
+    match diesmedienart:
+        case "Buch":
+            buchmedium_id = BuchExist(diesrow)
+            if buchmedium_id < 1:
+                diesmedium_id = MediumInsert(diestitel,diesmedienart) 
+                BuchInsert(diesmedium_id,diesrow)
+                return diesmedium_id
+            return buchmedium_id
+        case "Zeitschrift":
+            zeitschriftmedium_id = ZeitschriftExist(diesrow)
+            
+            if zeitschriftmedium_id < 1  :
+                diesmedium_id = MediumInsert(diestitel,diesmedienart)
+                ZeitschriftInsert(diesmedium_id,diesrow)
+            
+                return diesmedium_id
+            return zeitschriftmedium_id
+        case "Datei":
+            dateimedium_id = DateiExist(diesrow)
+            if dateimedium_id < 1:
+                diesmedium_id = MediumInsert(diestitel,diesmedienart)
+                DateiInsert(diesmedium_id,diesrow)
+                return diesmedium_id
+            return dateimedium_id
+        case _:
+            print(" diese Medienart ist nicht bekannt")
+
 
 
 def BuchInsert(diesmedium_id,diesrow):
@@ -58,6 +75,8 @@ def BuchInsert(diesmedium_id,diesrow):
             )
         )
      mydb.commit()
+     medium_id = mycursor.lastrowid
+     return medium_id
 
 def ZeitschriftInsert(diesmedium_id,diesrow):
     mycursor.execute(
@@ -68,10 +87,31 @@ def ZeitschriftInsert(diesmedium_id,diesrow):
                 diesrow.get('Jahrgang', None),
                 diesrow.get('Monat', None),
                 diesrow.get('HeftNR', None),
-                bool(row.get('Sonderheft', False))
+                bool(diesrow.get('Sonderheft', False))
             )
         )
     mydb.commit()
+    medium_id = mycursor.lastrowid
+    return medium_id
+
+# Neue Funktion DateiInsert
+
+def DateiInsert(diesmedium_id,diesrow):
+    mycursor.execute(
+        "INSERT INTO textdatei (MediumID, Dateiname, Pfad, Dateiformat, Datum, Ausdruck) VALUES (%s,%s,%s,%s,%s,%s)",
+        (
+            diesmedium_id,
+            diesrow.get('Dateiname', None),
+            diesrow.get('Pfad', None),
+            diesrow.get('Dateiformat', None),
+            diesrow.get('Datum', None),
+            bool(diesrow.get('Ausdruck', False)) 
+        )
+    )
+    mydb.commit()
+    medium_id = mycursor.lastrowid
+    return medium_id
+
 
 def AutorInsert(thisrow):
     mycursor.execute(
@@ -89,6 +129,7 @@ def AutorInsert(thisrow):
     return autor_id
 
 def AnleitungInsert(thismedium_id,thisrow):
+    
     mycursor.execute(
         "INSERT INTO anleitung (MediumID,NameAnleitung,Seitenzahl,Grundschnitt,ModelNR,Schnittbogen) values(%s,%s,%s,%s,%s,%s)",
         (
@@ -143,23 +184,14 @@ def AutorExist(thisrow):
         return 0
     return result[0]['AutorID']
 
-# def MediumExist(thistitel, thismedienart):
-#     mycursor.execute(
-#         "SELECT * from medium WHERE TitelMedium = %s and MedienArt = %s",
-#         (thistitel,thismedienart)
-#     )
-#     result=mycursor.fetchall()
-#     AnzahlResult=len(result)
-#     if AnzahlResult < 1:
-#       return 0
-#     return result [0]['MediumID']
 
 def BuchExist(diesrow):
     mycursor.execute(
-        "SELECT * FROM buch WHERE buch (Untertietel= %s AND Jahr = %s) OR ISBN = %s",
+        "SELECT * FROM buch WHERE (Untertitel = %s AND (Jahr = %s OR  Verlag = %s)) OR ISBN = %s;",
         (
-            diesrow.get('Untertietel'),
+            diesrow.get('Untertitel'),
             diesrow.get('Jahr'),
+            diesrow.get('Verlag'),
             diesrow.get('ISBN'),
         )
     )
@@ -169,15 +201,34 @@ def BuchExist(diesrow):
       return 0
     return result [0]['MediumID']
 
-def ZeitschriftExist(diesmedium_id):
+def ZeitschriftExist(diesrow):
     mycursor.execute(
-        "SELECT zeitschrift.MediumID FROM zeitschrift WHERE zeitschrift.MediumID = %s;",
-        [diesmedium_id]
+        "SELECT * FROM zeitschrift WHERE Jahrgang = %s AND (Monat = %s OR HeftNR =%s);",
+        (
+            diesrow.get('Jahrgang'),
+            diesrow.get('Monat'),
+            diesrow.get('HeftNR'),
+        )
     )
     result=mycursor.fetchall()
     AnzahlResult=len(result)
     if AnzahlResult < 1:
       return 0
+    return result [0]['MediumID']
+
+# Neue Funktion DateiExist
+
+def DateiExist(diesrow):
+    mycursor.execute(
+        "SELECT * FROM textdatei WHERE Dateiname = %s;",
+        (
+            diesrow.get('Dateiname'),
+        )
+    )
+    result = mycursor.fetchall()
+    AnzahlResult = len (result)
+    if AnzahlResult < 1:
+        return 0
     return result [0]['MediumID']
 
 def MediumAutorExist(diesmedium_id,diesmautor_id):
@@ -193,7 +244,7 @@ def MediumAutorExist(diesmedium_id,diesmautor_id):
 
 def AnleitungExist(thismedium_id,thisrow):
     mycursor.execute(
-        "SELECT * FROM  anleitung WHERE MediumID = %s AND NameAnleitung =%s AND Seitenzahl = %s;",
+        "SELECT * FROM  anleitung WHERE MediumID =%s AND NameAnleitung =%s AND Seitenzahl = %s;",
         (
             thismedium_id,
             thisrow.get('NameAnleitung'),
@@ -203,6 +254,7 @@ def AnleitungExist(thismedium_id,thisrow):
     result=mycursor.fetchall()
     AnzahlResult=len(result)
     if AnzahlResult < 1:
+      # print('MeriumID: ' + str(medium_id))
       return 0
     return result [0]['AnleitungID']
 
@@ -224,14 +276,9 @@ for daten, row in df.iterrows():
     medienart = row ['MedienArt']
     titelmedium = row ['TitelMedium']
 
-    medium_id = MediumInsert(titelmedium,medienart)
-
-    CheckMedienArt(titelmedium,medienart,row,medium_id)
-
-    # medium_id = MediumExist(titelmedium, medienart)
-    # if medium_id < 1:           
-    
-             
+        
+    medium_id = CheckMedienArt(medienart,row,titelmedium)
+     
     autor_id = AutorExist(row)
     if autor_id < 1:
         autor_id = AutorInsert(row)   
